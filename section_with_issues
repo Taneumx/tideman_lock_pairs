@@ -1,0 +1,36 @@
+//locks the pairs into the graph, looks at each pair in the pairs array
+void lock_pairs(void)
+{
+    for (int i = 0; i < pair_count; i++)
+    {
+        //if there is no cycle, the pair will be added to the locked graph
+        if (!cycle_check(pairs[i], pairs[i].winner))
+        {
+            locked[pairs[i].winner][pairs[i].loser] = true;
+        }
+    }
+    //return to main after completing
+    return;
+}
+
+//Pass in the starting pair and the source (the winner of the pair) if you get back to the source -> LOCK
+bool cycle_check(pair current, int source)
+{
+    //check all paths for each pair that you're on
+    for (int i = 0; i < pair_count; i++)
+    {
+        //only moves onto the next pair if the current loser is equal to the awinner and that pair has been locked
+        if (current.loser == pairs[i].winner && locked[pairs[i].winner][pairs[i].loser])
+        {
+            //base case, stops infinite cycle if your get back to the source
+            if(source == pairs[i].loser)
+            {
+                return true;
+            }
+            //if the source isnt matched, look at the next pair
+            return cycle_check(pairs[i], source);
+        }
+    }
+    //if no cycle is found, return false
+    return false;
+}
